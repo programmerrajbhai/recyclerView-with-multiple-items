@@ -75,11 +75,11 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="350dp"
             android:layout_marginStart="10sp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10sp"
-            app:cardCornerRadius="20sp">
+            app:cardCornerRadius="13dp">
 
 
             <LinearLayout
@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/load" />
+                    android:src="@drawable/pp" />
 
 
             </LinearLayout>

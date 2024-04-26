@@ -1,5 +1,4 @@
 package com.live.recyclerviewandroid;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,8 +21,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.squareup.picasso.Picasso;
@@ -40,12 +42,10 @@ public class MainActivity extends AppCompatActivity {
     HashMap<String, String> hashMap;
     ArrayList<HashMap<String, String>> arrayList;
     ArrayList<HashMap<String, String>> finalArrayList;
-
     RelativeLayout ActivityCall,activityHome;
-
     //=================================================================
 //=================================================================
-    BottomNavigationView bottomNavigation;
+    BottomNavigationView buttomNav;
     SwipeRefreshLayout swipeRefreshLayout,swipeRefreshLayou2;
 
 
@@ -56,15 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
         //================== Create GDPR Class ===========
         //============================================ EN
-
-
         itemVideo();
         createFinalItems();
 
 
-
-
-
+        buttomNav = findViewById(R.id.buttomNav);
+        activityHome = findViewById(R.id.activityHome);
+        ActivityCall = findViewById(R.id.ActivityCall);
 
         recyclrtView = findViewById(R.id.recyclrtView);
         recyclrtView2 = findViewById(R.id.recyclrtView2);
@@ -74,16 +72,33 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayou2 = findViewById(R.id.swipeRefreshLayout2);
 
 
+        buttomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId()==R.id.home) {
+                ActivityCall.setVisibility(View.GONE);
+                    activityHome.setVisibility(View.VISIBLE);
+                }else if (menuItem.getItemId()== R.id.call){
+                    activityHome.setVisibility(View.GONE);
+                    ActivityCall.setVisibility(View.VISIBLE);
+                }
+
+
+
+                    return false;
+            }
+        });
+
         MyAdapter2 myAdapter2= new MyAdapter2();
         recyclrtView2.setAdapter(myAdapter2);
-        recyclrtView2.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclrtView2.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
 
         MyAdapter myAdapter = new MyAdapter();
         Collections.shuffle(arrayList);
 
         recyclrtView.setAdapter(myAdapter);
-        recyclrtView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclrtView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
 
 
@@ -97,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 MyAdapter myAdapter = new MyAdapter();
                 recyclrtView.setAdapter(myAdapter);
 
-                recyclrtView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                recyclrtView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
 
 
@@ -118,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MyAdapter2 myAdapter2=new MyAdapter2();
                 recyclrtView2.setAdapter(myAdapter2);
-                recyclrtView2.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                recyclrtView2.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
                 // Implement your data loading logic here
                 // For example, you might fetch new data from a server or a local database.
@@ -132,12 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void fetchData() {
-
         // After the data is loaded, stop the refresh animation
         swipeRefreshLayout.setRefreshing(false);
     }
     private void fetchData2() {
-
         // After the data is loaded, stop the refresh animation
         swipeRefreshLayou2.setRefreshing(false);
     }
@@ -280,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
             TextView name;
             ImageView imageViewitem;
             LinearLayout layItem;
+            LottieAnimationView lottieAnimationView;
 
             public homepageviewholder(@NonNull View itemView) {
                 super(itemView);
@@ -287,18 +301,21 @@ public class MainActivity extends AppCompatActivity {
                 name= itemView.findViewById(R.id.name);
                 imageViewitem= itemView.findViewById(R.id.imageViewitem);
                 layItem= itemView.findViewById(R.id.layItem);
+                lottieAnimationView= itemView.findViewById(R.id.lottieAnimationView);
 
             }
         }
 
 
         private class nativeadsviewholder extends RecyclerView.ViewHolder{
+            LottieAnimationView lottieAnimationView;
 
 
 
             public nativeadsviewholder(@NonNull View itemView) {
                 super(itemView);
 
+                lottieAnimationView= itemView.findViewById(R.id.lottieAnimationView);
 
 
             }
@@ -318,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
             }else {
 
-                View myview = layoutInflater.inflate(R.layout.justtry,parent,false);
+                View myview = layoutInflater.inflate(R.layout.justtry2,parent,false);
                 return new nativeadsviewholder(myview);
 
             }
@@ -339,6 +356,8 @@ public class MainActivity extends AppCompatActivity {
                 String cover_image= hashMap.get("cover_image");
                 homepage.name.setText(name);
 
+                homepage.lottieAnimationView.setAnimation(R.raw.video_call);
+                homepage.lottieAnimationView.playAnimation();
 
                 homepage.layItem.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -349,12 +368,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                Picasso.get().load(cover_image).placeholder(R.drawable.load).into(homepage.imageViewitem);
+               // Picasso.get().load(cover_image).placeholder(R.drawable.load).into(homepage.imageViewitem);
 
 
 
             }else if (getItemViewType(position)==ADS){
                 nativeadsviewholder nativview= (nativeadsviewholder) holder;
+                nativview.lottieAnimationView.setAnimation(R.raw.video_call);
+                nativview.lottieAnimationView.playAnimation();
 
             }
 
